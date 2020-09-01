@@ -7,7 +7,7 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import f1_score, confusion_matrix, accuracy_score
 
 
-def plotRegulParam(lambdas, X, y, n_cv=5, logScale=True):
+def plotRegulParam(lambdas, X, y, n_cv=5, logScale=True, filename=None):
     cv_scores = np.zeros(len(lambdas))
     f1_scores = np.zeros(len(lambdas))
 
@@ -22,9 +22,14 @@ def plotRegulParam(lambdas, X, y, n_cv=5, logScale=True):
         plt.plot(lambdas, cv_scores, 'o-', color="r",label="CV score")
         plt.plot(lambdas, f1_scores, 'o-', color="g",label="F1 score")
     plt.ylim([0.5,1]); plt.legend(); plt.xlabel("Regularization parameter")
-    plt.ylabel(r"score"); plt.show()
+    plt.ylabel(r"score")
+    if filename is not None:
+        plt.tight_layout()
+        plt.savefig(filename)
+    else:
+        plt.show()
     
-def plotLearning(lamb, X, y, n_cv=5):
+def plotLearning(lamb, X, y, n_cv=5, filename=None):
     maxent = linear_model.LogisticRegression(penalty='l2', C=1/lamb, solver='liblinear')
 
     n_jobs = 4 # number of jobs
@@ -44,7 +49,12 @@ def plotLearning(lamb, X, y, n_cv=5):
     plt.plot(train_sizes, test_scores_mean+test_scores_std, '-', color="g")
     plt.plot(train_sizes, test_scores_mean-test_scores_std, '-', color="g")
     plt.ylim([0.5,1.05]); plt.legend(); plt.xlabel("size of training set")
-    plt.ylabel(r"$F_1$ score"); plt.show()
+    plt.ylabel(r"$F_1$ score")
+    if filename is not None:
+        plt.tight_layout()
+        plt.savefig(filename)
+    else:
+        plt.show()
 
 def precision(conf_mat, idx=0):
     return conf_mat[idx,idx] / (conf_mat[0,idx] + conf_mat[1,idx])
