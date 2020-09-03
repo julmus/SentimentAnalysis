@@ -8,6 +8,15 @@ from sklearn.metrics import f1_score, confusion_matrix, accuracy_score
 
 
 def plotRegulParam(lambdas, X, y, n_cv=5, logScale=True, filename=None):
+    """
+Plots the cross-validation error as a function of the regularization parameter for logistic regression.
+lambdas: array of regularization parameters
+X: training vector
+y: target values
+n_cv: data is splitted into n_cv parts for cross-validation
+logScale: plot horizontal axis on a logarithmic scale
+filename: save result to file with this name
+    """
     cv_scores = np.zeros(len(lambdas))
     f1_scores = np.zeros(len(lambdas))
 
@@ -30,6 +39,14 @@ def plotRegulParam(lambdas, X, y, n_cv=5, logScale=True, filename=None):
         plt.show()
     
 def plotLearning(lamb, X, y, n_cv=5, filename=None):
+    """
+Plots learning curve for logistic regression.
+lamb: regularization parameter
+X: training vector
+y: target values
+n_cv: data is splitted into n_cv parts for cross-validation
+filename: save result to file with this name
+    """
     maxent = linear_model.LogisticRegression(penalty='l2', C=1/lamb, solver='liblinear')
 
     n_jobs = 4 # number of jobs
@@ -57,15 +74,47 @@ def plotLearning(lamb, X, y, n_cv=5, filename=None):
         plt.show()
 
 def precision(conf_mat, idx=0):
+    """
+Precision from configuration matrix
+conf_max: configuration matrix. shape=(2,2)
+idx: index to calculate precision for
+
+return: precision
+    """
     return conf_mat[idx,idx] / (conf_mat[0,idx] + conf_mat[1,idx])
+
 def recall(conf_mat, idx=0):
+    """
+Recall from configuration matrix
+conf_max: configuration matrix. shape=(2,2)
+idx: index to calculate recall for
+
+return: recall
+    """
     return conf_mat[idx,idx] / (conf_mat[idx,0] + conf_mat[idx,1])
+
 def f1Score(conf_mat, idx=0):
+    """
+F1 score from configuration matrix
+conf_max: configuration matrix. shape=(2,2)
+idx: index to calculate F1 score for
+
+return: F1 score
+    """
     p = precision(conf_mat, idx)
     r = recall(conf_mat, idx)
     return 2.*p*r / (p+r)
     
 def kFoldSummary(encoder, lamb, X, y, n_cv, pr_idx=0):
+    """
+Prints a summary including the configuration matrix and different scores for logistic regression
+encoder: Encoder containing the labels for the target values
+lamb: regularization parameter
+X: training vector
+y: target values
+n_cv: data is splitted into n_cv parts for cross-validation
+pr_idx: Index to calculate precision and recall for
+    """
     kf = KFold(n_splits=n_cv)
     confusMatrices = []
     f1Scores = []
